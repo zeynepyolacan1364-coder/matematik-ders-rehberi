@@ -156,7 +156,7 @@ with tab3:
         if api_key:
             try:
                 genai.configure(api_key=api_key)
-               model = genai.GenerativeModel('gemini-pro')
+                model = genai.GenerativeModel('gemini-pro')
                 
                 sistem_istemi = f"""
                 Sen bir üniversitenin Matematik Bölümü öğrencileri için tasarlanmış profesyonel bir Akademik Yapay Zeka Danışmanısın.
