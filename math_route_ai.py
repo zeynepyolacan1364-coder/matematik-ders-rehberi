@@ -147,7 +147,7 @@ with tab3:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
-    if prompt := st.chat_input("Örn: Yapay zeka mühendisi olmak istiyorum, 3. sınıfta hangi seçmeli dersleri almalıyım?"):
+   if prompt := st.chat_input("Örn: Yapay zeka mühendisi olmak istiyorum, 3. sınıfta hangi seçmeli dersleri almalıyım?"):
         
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("user"):
@@ -157,34 +157,27 @@ with tab3:
             try:
                 genai.configure(api_key=api_key)
                 
-                # Google'ın senin hesabına tanımladığı AKTİF modelleri otomatik buluyoruz:
-                aktif_modeller = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
+                # Google'ın açıkça istediği en güncel modeli yazıyoruz:
+                model = genai.GenerativeModel('gemini-3.6-flash')
                 
-                if len(aktif_modeller) == 0:
-                    st.error("Hata: Bu API anahtarına tanımlı kullanılabilir bir model bulunamadı.")
-                else:
-                    # Sistem listedeki çalışan ilk modeli otomatik seçecek
-                    otomatik_model_adi = aktif_modeller[0]
-                    model = genai.GenerativeModel(otomatik_model_adi)
-                    
-                    sistem_istemi = f"""
-                    Sen bir üniversitenin Matematik Bölümü öğrencileri için tasarlanmış profesyonel bir Akademik Yapay Zeka Danışmanısın.
-                    Sadece aşağıda sana verdiğim ders veri tabanını kullanarak öğrencilere kariyer ve ders seçimi tavsiyeleri ver.
-                    Veri tabanı dışında ders uydurma. Yanıtların kibar, teşvik edici ve net olsun.
-                    
-                    Müfredat Veri Tabanı:
-                    {dersler_db}
-                    
-                    Öğrencinin Sorusu: {prompt}
-                    """
-                    
-                    with st.chat_message("assistant"):
-                        with st.spinner("Müfredat analiz ediliyor..."):
-                            response = model.generate_content(sistem_istemi)
-                            st.markdown(response.text)
-                    
-                    st.session_state.messages.append({"role": "assistant", "content": response.text})
-                    
+                sistem_istemi = f"""
+                Sen bir üniversitenin Matematik Bölümü öğrencileri için tasarlanmış profesyonel bir Akademik Yapay Zeka Danışmanısın.
+                Sadece aşağıda sana verdiğim ders veri tabanını kullanarak öğrencilere kariyer ve ders seçimi tavsiyeleri ver.
+                Veri tabanı dışında ders uydurma. Yanıtların kibar, teşvik edici ve net olsun.
+                
+                Müfredat Veri Tabanı:
+                {dersler_db}
+                
+                Öğrencinin Sorusu: {prompt}
+                """
+                
+                with st.chat_message("assistant"):
+                    with st.spinner("Müfredat analiz ediliyor..."):
+                        response = model.generate_content(sistem_istemi)
+                        st.markdown(response.text)
+                
+                st.session_state.messages.append({"role": "assistant", "content": response.text})
+                
             except Exception as e:
                 with st.chat_message("assistant"):
                     st.error(f"Bağlantı hatası oluştu: {e}")
