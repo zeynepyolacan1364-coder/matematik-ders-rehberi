@@ -146,8 +146,8 @@ with tab3:
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
-
-   if prompt := st.chat_input("Örn: Yapay zeka mühendisi olmak istiyorum, 3. sınıfta hangi seçmeli dersleri almalıyım?"):
+            
+if prompt := st.chat_input("Örn: Yapay zeka mühendisi olmak istiyorum, 3. sınıfta hangi seçmeli dersleri almalıyım?"):
         
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("user"):
